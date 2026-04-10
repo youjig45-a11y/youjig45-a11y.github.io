@@ -1,0 +1,28 @@
+name: Lead Sync — Formspree → Notion + Discord
+
+on:
+  schedule:
+    - cron: '*/15 * * * *'   # 15分おきに実行
+  workflow_dispatch:          # 手動実行も可能
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Sync Formspree submissions
+        env:
+          FORMSPREE_API_KEY:  ${{ secrets.FORMSPREE_API_KEY }}
+          FORMSPREE_FORM_ID:  ${{ secrets.FORMSPREE_FORM_ID }}
+          NOTION_API_TOKEN:   ${{ secrets.NOTION_API_TOKEN }}
+          NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: python scripts/formspree_sync.py
