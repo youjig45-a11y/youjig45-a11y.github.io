@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>関口祐紀 — AI活用・システム開発</title>
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #12121a;
+    --border: #1e1e2e;
+    --accent: #7c6af7;
+    --accent2: #4fc3f7;
+    --text: #e8e8f0;
+    --muted: #8888a0;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--bg); color: var(--text); font-family: 'Hiragino Sans', 'Meiryo', sans-serif; line-height: 1.7; }
+  a { color: var(--accent); text-decoration: none; }
+
+  nav { position: fixed; top: 0; width: 100%; background: rgba(10,10,15,0.85); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); z-index: 100; padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; height: 60px; }
+  .nav-logo { font-weight: 700; font-size: 1.1rem; letter-spacing: .05em; }
+  .nav-links { display: flex; gap: 2rem; font-size: .9rem; }
+  .nav-links a { color: var(--muted); transition: color .2s; }
+  .nav-links a:hover { color: var(--text); }
+
+  .hero { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 6rem 2rem 4rem; position: relative; overflow: hidden; }
+  .hero::before { content: ''; position: absolute; width: 600px; height: 600px; background: radial-gradient(circle, rgba(124,106,247,.15) 0%, transparent 70%); top: 50%; left: 50%; transform: translate(-50%,-50%); pointer-events: none; }
+  .badge { display: inline-block; background: rgba(124,106,247,.15); border: 1px solid rgba(124,106,247,.3); color: var(--accent); padding: .3rem 1rem; border-radius: 999px; font-size: .8rem; margin-bottom: 1.5rem; letter-spacing: .1em; }
+  .hero h1 { font-size: clamp(2.5rem, 6vw, 4.5rem); font-weight: 800; line-height: 1.1; margin-bottom: 1rem; }
+  .hero h1 span { background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .hero p { font-size: 1.1rem; color: var(--muted); max-width: 520px; margin: 0 auto 2.5rem; }
+  .btn-group { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+  .btn-primary { background: var(--accent); color: #fff; padding: .75rem 2rem; border-radius: 8px; font-weight: 600; transition: opacity .2s; }
+  .btn-primary:hover { opacity: .85; }
+  .btn-outline { border: 1px solid var(--border); color: var(--text); padding: .75rem 2rem; border-radius: 8px; transition: border-color .2s; }
+  .btn-outline:hover { border-color: var(--accent); }
+
+  section { padding: 5rem 2rem; max-width: 960px; margin: 0 auto; }
+  .section-label { color: var(--accent); font-size: .8rem; letter-spacing: .15em; text-transform: uppercase; margin-bottom: .75rem; }
+  .section-title { font-size: clamp(1.6rem, 3vw, 2.2rem); font-weight: 700; margin-bottom: 3rem; }
+  hr.divider { border: none; border-top: 1px solid var(--border); }
+
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.5rem; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.75rem; transition: border-color .2s, transform .2s; }
+  .card:hover { border-color: var(--accent); transform: translateY(-4px); }
+  .card-icon { font-size: 2rem; margin-bottom: 1rem; }
+  .card h3 { font-size: 1.1rem; margin-bottom: .5rem; }
+  .card p { font-size: .9rem; color: var(--muted); }
+  .card .price { display: inline-block; margin-top: 1rem; font-size: .85rem; color: var(--accent2); border: 1px solid rgba(79,195,247,.25); padding: .2rem .75rem; border-radius: 999px; }
+
+  .skill-list { display: flex; flex-wrap: wrap; gap: .75rem; }
+  .skill { background: var(--surface); border: 1px solid var(--border); padding: .4rem 1rem; border-radius: 6px; font-size: .875rem; }
+
+  .contact-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 2.5rem; }
+  .form-group { margin-bottom: 1.25rem; }
+  label { display: block; font-size: .875rem; color: var(--muted); margin-bottom: .4rem; }
+  input, textarea, select { width: 100%; background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: .75rem 1rem; border-radius: 8px; font-size: .95rem; font-family: inherit; transition: border-color .2s; outline: none; }
+  input:focus, textarea:focus, select:focus { border-color: var(--accent); }
+  textarea { min-height: 120px; resize: vertical; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .btn-submit { width: 100%; background: var(--accent); color: #fff; padding: .875rem; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: opacity .2s; margin-top: .5rem; }
+  .btn-submit:hover { opacity: .85; }
+
+  footer { border-top: 1px solid var(--border); text-align: center; padding: 2rem; color: var(--muted); font-size: .85rem; }
+
+  @media (max-width: 600px) { .form-row { grid-template-columns: 1fr; } .nav-links { display: none; } }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">YS / AI Engineer</div>
+  <div class="nav-links">
+    <a href="#services">サービス</a>
+    <a href="#skills">スキル</a>
+    <a href="#contact">お問い合わせ</a>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="badge">AI-Driven Development</div>
+  <h1>AIで、業務を<br><span>10倍速にする</span></h1>
+  <p>AI自動化・システム開発・コンサルティング。<br>ナハトのIT企画担当として培った知見で、あなたのビジネスを加速します。</p>
+  <div class="btn-group">
+    <a href="#contact" class="btn-primary">無料相談する</a>
+    <a href="#services" class="btn-outline">サービスを見る</a>
+  </div>
+</div>
+
+<hr class="divider">
+
+<section id="services">
+  <div class="section-label">Services</div>
+  <div class="section-title">提供サービス</div>
+  <div class="cards">
+    <div class="card">
+      <div class="card-icon">🤖</div>
+      <h3>AI自動化開発</h3>
+      <p>業務フロー分析からLLM/RAGシステム実装まで。Claude Code・OpenAI・Ollamaを活用した自動化ソリューション。</p>
+      <span class="price">¥8,000〜/h</span>
+    </div>
+    <div class="card">
+      <div class="card-icon">🌐</div>
+      <h3>Webアプリ開発</h3>
+      <p>Python / Go / TypeScript によるAPI・管理画面・LINE Bot等の受託開発。小規模〜中規模に対応。</p>
+      <span class="price">¥6,000〜/h</span>
+    </div>
+    <div class="card">
+      <div class="card-icon">💡</div>
+      <h3>AIコンサルティング</h3>
+      <p>AI導入戦略の策定・PoC設計・社内研修まで。「どこから始めればいいか」から一緒に考えます。</p>
+      <span class="price">¥10,000〜/h</span>
+    </div>
+    <div class="card">
+      <div class="card-icon">🎬</div>
+      <h3>クリエイティブ制作</h3>
+      <p>AI画像生成・動画制作・SNSコンテンツ自動生成。ComfyUI・VOICEVOX・FFmpegを活用。</p>
+      <span class="price">¥5,000〜/h</span>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<section id="skills">
+  <div class="section-label">Skills</div>
+  <div class="section-title">技術スタック</div>
+  <div class="skill-list">
+    <span class="skill">Python</span>
+    <span class="skill">Go</span>
+    <span class="skill">TypeScript</span>
+    <span class="skill">PHP</span>
+    <span class="skill">Claude / OpenAI API</span>
+    <span class="skill">Ollama / Qwen</span>
+    <span class="skill">Claude Code</span>
+    <span class="skill">ComfyUI / SDXL</span>
+    <span class="skill">VOICEVOX</span>
+    <span class="skill">FastAPI</span>
+    <span class="skill">LINE Bot</span>
+    <span class="skill">Notion API</span>
+    <span class="skill">GitHub Actions</span>
+    <span class="skill">Windows / PowerShell</span>
+    <span class="skill">mise / uv</span>
+  </div>
+</section>
+
+<hr class="divider">
+
+<section id="contact">
+  <div class="section-label">Contact</div>
+  <div class="section-title">お問い合わせ</div>
+  <div class="contact-wrap">
+    <form action="https://formspree.io/f/REPLACE_WITH_FORMSPREE_ID" method="POST">
+      <div class="form-row">
+        <div class="form-group">
+          <label>お名前 *</label>
+          <input type="text" name="name" required placeholder="山田 太郎">
+        </div>
+        <div class="form-group">
+          <label>会社名</label>
+          <input type="text" name="company" placeholder="株式会社〇〇">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>メールアドレス *</label>
+        <input type="email" name="email" required placeholder="example@company.com">
+      </div>
+      <div class="form-group">
+        <label>サービス種別</label>
+        <select name="service">
+          <option value="">選択してください</option>
+          <option>AI自動化開発</option>
+          <option>Webアプリ開発</option>
+          <option>AIコンサルティング</option>
+          <option>クリエイティブ制作</option>
+          <option>その他</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>ご相談内容 *</label>
+        <textarea name="message" required placeholder="お気軽にご相談ください。予算・納期の目安があればお知らせください。"></textarea>
+      </div>
+      <button type="submit" class="btn-submit">送信する</button>
+    </form>
+  </div>
+</section>
+
+<footer>
+  <p>© 2026 関口祐紀. Built with Claude Code.</p>
+</footer>
+
+</body>
+</html>
