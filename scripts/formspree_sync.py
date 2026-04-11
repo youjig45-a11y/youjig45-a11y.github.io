@@ -11,8 +11,8 @@ from datetime import datetime
 
 import requests
 
-FORMSPREE_API_KEY  = os.environ["FORMSPREE_API_KEY"]
-FORMSPREE_FORM_ID  = os.environ["FORMSPREE_FORM_ID"]
+FORMSPREE_API_KEY  = os.environ.get("FORMSPREE_API_KEY", "")
+FORMSPREE_FORM_ID  = os.environ.get("FORMSPREE_FORM_ID", "")
 NOTION_API_TOKEN   = os.environ["NOTION_API_TOKEN"]
 NOTION_DATABASE_ID = os.environ["NOTION_DATABASE_ID"]
 DISCORD_WEBHOOK    = os.environ["DISCORD_WEBHOOK_URL"]
@@ -99,6 +99,9 @@ def mark_as_read(submission_id: str) -> None:
 
 
 def main():
+    if not FORMSPREE_API_KEY:
+        print("FORMSPREE_API_KEY未設定 — スキップ（Formspreeダッシュボードでsubmissionsを確認してください）")
+        return
     submissions = fetch_submissions()
     if not submissions:
         print("新規問い合わせなし")
