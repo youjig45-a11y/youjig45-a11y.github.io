@@ -1,0 +1,26 @@
+name: Lead Sync Offline Tests
+
+on:
+  pull_request:
+  push:
+    branches:
+      - 'codex/private/lead-sync-failure-20261001'
+
+permissions:
+  contents: read
+
+jobs:
+  offline-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install test dependency
+        run: python -m pip install requests==2.33.1
+      - name: Test without account credentials or real transports
+        run: python -I -B -m unittest discover -s tests -p 'test_formspree_sync.py' -v
