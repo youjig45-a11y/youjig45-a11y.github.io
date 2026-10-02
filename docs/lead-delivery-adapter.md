@@ -124,6 +124,43 @@ reconciliation; the last resumes only fake Discord/mark_read. Each records one
 fake Notion effect. These temporary-store tests cover process termination, not
 host power loss, disk failure, production durability or real receipt authenticity.
 
+## Explicit local reference storage preparation
+
+`scripts/lead_delivery_references.py` supplies `SQLitePrivateReferenceStore(path)`
+as an optional caller-injected implementation of `PrivateReferenceStore`. There is
+no default path, environment/CLI enablement, parent-directory creation or automatic
+adapter/production wiring. The existing engine, adapter, HTTP entry and workflows
+are unchanged. A supplied path does not authorize production use.
+
+It stores exact attempt-scoped reference values and digests in a separate SQLite
+file. Same-content persistence is idempotent; conflicting values or scopes for
+the same attempt are rejected without replacement. Readback requires the exact
+scope and computed value digest. Reopening that file recovers the reference;
+hash consistency does not authenticate a remote effect.
+
+Unknown/engine/empty existing databases are rejected by immutable read-only
+preflight before opening for writes. Known schema/version is checked again on the
+opened handle. Initialization applies only to an exclusively created new file;
+there is no schema migration. Symlink/reparse parents, hardlinked/nonregular files
+and observed path-identity changes are rejected. Windows reserved device components
+are rejected before filesystem/database I/O. Identity and schema are rechecked
+under the write lock before inserting any reference. These checks assume a trusted
+local filesystem and are not a race-free open or adversarial-filesystem guarantee.
+Callers must keep each instance in its owning thread and close it explicitly.
+
+Tests use only temporary paths and synthetic values, including real two-connection
+contention, COMMIT rollback, readback substitution, reparse/alias rejection and the
+three abrupt process exits above with this concrete store. Errors and standard
+formatted tracebacks contain fixed categories. No HTTP, credentials or installed
+runtime changes are part of this validation.
+
+Reference values are stored in plaintext. This implementation supplies no access
+control, encryption, backup, multi-host coordination or power-loss guarantee.
+Receipt verification and operator authority remain default-denied unless their
+separate implementations are explicitly injected. Production location, runner,
+privacy policy, authentic receipt/readback, authority/drain and migration evidence
+remain necessary before any live integration or activation.
+
 ## Remaining production inputs and owner
 
 The site maintainer and common operations owner still must select the private
