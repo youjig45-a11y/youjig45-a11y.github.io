@@ -738,6 +738,110 @@ class AdapterTests(unittest.TestCase):
                     self.assert_sanitized(lambda: self.worker.advance(claim, effect_result),
                                           adapter.AdapterError, "adapter_advance_failed")
 
+    def assert_abrupt_exit_recovery(self, cutpoint, expected_references, *, confirmed=False):
+        runner = r'''
+import os, sys
+from pathlib import Path
+sys.path[:0] = [sys.argv[1], sys.argv[2]]
+from test_lead_delivery_adapter import SyntheticReferences, SyntheticReceipts, effect_result
+from lead_delivery_adapter import DeliveryAdapter
+cutpoint = sys.argv[3]
+engine, private, effects = map(Path, sys.argv[4:7])
+class AbruptReferences(SyntheticReferences):
+    def persist(self, reference):
+        if cutpoint == "before_private_commit":
+            os._exit(86)
+        super().persist(reference)
+        if cutpoint == "after_private_commit":
+            os._exit(86)
+refs = AbruptReferences(private)
+worker = DeliveryAdapter(engine, references=refs, receipts=SyntheticReceipts(), clock=lambda: 100)
+key = worker.store.enroll("synthetic-crash-form", "synthetic-crash-submission")
+claim = worker.store.claim(key, lease_seconds=60)
+if cutpoint == "after_engine_confirm":
+    original = worker.store.confirm
+    def crash_after_confirm(*args):
+        original(*args)
+        os._exit(86)
+    worker.store.confirm = crash_after_confirm
+def fake(attempt):
+    assert attempt.stage == "notion"
+    with effects.open("a", encoding="utf-8") as effect_log:
+        effect_log.write("notion\n")
+        effect_log.flush()
+        os.fsync(effect_log.fileno())
+    return effect_result(attempt)
+worker.advance(claim, fake)
+raise AssertionError("abrupt_exit_not_reached")
+'''
+        engine = Path(self.temp.name) / "abrupt-engine.sqlite"
+        private = Path(self.temp.name) / "abrupt-references.sqlite"
+        effects = Path(self.temp.name) / "abrupt-fake-effects.txt"
+        result = subprocess.run(
+            [sys.executable, "-I", "-B", "-c", runner, str(SCRIPTS),
+             str(Path(__file__).resolve().parent), cutpoint, str(engine), str(private), str(effects)],
+            env={"SystemRoot": os.environ.get("SystemRoot", "C:\\Windows")},
+            text=True, capture_output=True, timeout=20, check=False)
+        self.assertEqual(result.returncode, 86, result.stderr)
+        self.assertEqual(result.stdout, "")
+        self.assertEqual(result.stderr, "")
+        self.assertEqual(effects.read_text(encoding="utf-8").splitlines(), ["notion"])
+        key = state.lead_key("synthetic-crash-form", "synthetic-crash-submission")
+        refs = SyntheticReferences(private)
+        self.addCleanup(refs.close)
+        with adapter.DeliveryAdapter(engine, references=refs, receipts=SyntheticReceipts(),
+                                     clock=lambda: 120) as worker:
+            with self.assertRaisesRegex(state.Busy, "^claim_busy$"):
+                worker.store.claim(key)
+            self.assertEqual(worker.store.snapshot(key)["stages"], {
+                "notion": "confirmed" if confirmed else "inflight",
+                "discord": "pending", "mark_read": "pending",
+            })
+        with adapter.DeliveryAdapter(engine, references=refs, receipts=SyntheticReceipts(),
+                                     clock=lambda: 161) as worker:
+            if confirmed:
+                claim = worker.store.claim(key)
+                followon = []
+                def fake_next(attempt):
+                    self.assertEqual(worker.resolve_confirmed(key, "notion").value,
+                                     "synthetic-private:notion")
+                    self.assertIn(attempt.stage, ("discord", "mark_read"))
+                    followon.append(attempt.stage)
+                    return effect_result(attempt)
+                worker.advance(claim, fake_next)
+                worker.advance(claim, fake_next)
+                self.assertEqual(followon, ["discord", "mark_read"])
+                self.assertTrue(worker.store.snapshot(key)["complete"])
+                worker.store.release(claim)
+            else:
+                with self.assertRaisesRegex(state.OutcomeUncertain, "^reconciliation_required$"):
+                    worker.store.claim(key)
+                snapshot = worker.store.snapshot(key)
+                self.assertEqual(snapshot["stages"], {
+                    "notion": "uncertain", "discord": "pending", "mark_read": "pending",
+                })
+                self.assertFalse(snapshot["complete"])
+                row = worker.store.db.execute("SELECT token,generation FROM attempts WHERE key=?",
+                                              (key,)).fetchone()
+                attempt = state.Attempt(key, "notion", row["token"], row["generation"])
+                with self.assertRaisesRegex(adapter.AdapterError, "^operator_authorization_required$"):
+                    worker.reconcile(json.dumps(self.reconciliation_object(attempt)))
+                self.assertEqual(worker.store.snapshot(key), snapshot)
+            self.assertEqual(worker.store.db.execute("SELECT COUNT(*) FROM attempts").fetchone()[0],
+                             3 if confirmed else 1)
+            self.assertEqual(refs.db.execute("SELECT COUNT(*) FROM refs").fetchone()[0],
+                             expected_references)
+            self.assertEqual(effects.read_text(encoding="utf-8").splitlines(), ["notion"])
+
+    def test_abrupt_exit_before_private_commit_stays_uncertain_without_replay(self):
+        self.assert_abrupt_exit_recovery("before_private_commit", 0)
+
+    def test_abrupt_exit_after_private_commit_retains_reference_without_confirming(self):
+        self.assert_abrupt_exit_recovery("after_private_commit", 1)
+
+    def test_abrupt_exit_after_engine_confirm_resumes_without_notion_replay(self):
+        self.assert_abrupt_exit_recovery("after_engine_confirm", 3, confirmed=True)
+
     def test_actual_two_process_restart_resolves_private_identity_without_notion_replay(self):
         runner = r'''
 import json, sys

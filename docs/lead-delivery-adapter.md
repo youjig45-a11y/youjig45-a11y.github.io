@@ -116,6 +116,14 @@ synthetic identity and runs only fake Discord/mark_read. Completion requires all
 three confirmed stages. Neither this output nor passing tests establishes actual
 Notion/Discord/Formspree delivery, operator authority or scheduled operation.
 
+Three additional child-process tests use controlled abrupt exits, without graceful
+release, before private-reference persistence, after its COMMIT but before engine
+confirmation, and after engine confirmation. A live lease denies a new claim.
+After expiry, the first two cases retain uncertainty and deny unauthenticated
+reconciliation; the last resumes only fake Discord/mark_read. Each records one
+fake Notion effect. These temporary-store tests cover process termination, not
+host power loss, disk failure, production durability or real receipt authenticity.
+
 ## Remaining production inputs and owner
 
 The site maintainer and common operations owner still must select the private
