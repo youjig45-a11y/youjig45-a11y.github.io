@@ -1,0 +1,50 @@
+name: CSV demo checks
+
+on:
+  pull_request:
+    paths:
+      - 'index.html'
+      - 'csv-automation/**'
+      - '.github/workflows/csv-demo-tests.yml'
+  push:
+    branches: ['codex/private/revenue-csv-first-sale']
+
+permissions:
+  contents: read
+
+jobs:
+  csv-demo:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify CSV regression tests
+        run: node --test csv-automation/tests/core.test.cjs
+      - name: Verify generated demo is current
+        run: |
+          python csv-automation/scripts/build.py
+          git diff --exit-code -- csv-automation/index.html
+      - name: Install browser test dependencies
+        run: |
+          pip install playwright==1.63.0
+          python -m playwright install --with-deps chromium
+      - name: Verify offline browser behavior
+        run: |
+          python csv-automation/tests/browser_test.py
+          python csv-automation/tests/offline_flow_test.py
+          python csv-automation/tests/regression_test.py
+      - name: Verify local HTTP consultation flow with mocked receipt
+        run: python csv-automation/tests/integration_test.py
+      - name: Preserve synthetic test evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: csv-demo-test-evidence
+          path: csv-automation/evidence/
+          if-no-files-found: ignore
