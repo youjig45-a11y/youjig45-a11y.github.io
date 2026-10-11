@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex,nofollow"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-GFdlMIblMqOPgt8BMCgQw0etjy2kFKIYUodMdmwrCKI=' 'sha256-pW47VbCwuLxsKgR7XQdek6acENVbS8VmQhAvDr4oHio='; style-src 'unsafe-inline'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'"><meta name="referrer" content="no-referrer"><meta name="description" content="ブラウザ内だけでCSVを読み込み、分類別の集計とCSV出力を試せるデモ。"><title>CSV集計ワークベンチ | YS 業務自動化デモ</title><style>:root{--ink:#172c3b;--muted:#516674;--line:#dbe4e7;--paper:#f5f8f8;--white:#fff;--green:#13664f;--mint:#dff3e9;--orange:#f2c674;--shadow:0 16px 46px #16344309}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--paper);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,'Hiragino Kaku Gothic ProN','Yu Gothic',Meiryo,sans-serif;line-height:1.65}button,input,textarea,select{font:inherit}button,a,input,textarea,select{touch-action:manipulation}a{color:var(--green)}button{cursor:pointer}button:disabled{cursor:not-allowed;opacity:.5}button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:3px solid #ca8300;outline-offset:3px}header{border-bottom:1px solid var(--line);background:#ffffffd9}nav{max-width:1160px;padding:20px 28px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:18px}.brand{font-size:17px;font-weight:800;letter-spacing:.03em;text-decoration:none;color:var(--ink)}.brand b{display:inline-flex;background:var(--green);color:white;width:35px;height:35px;align-items:center;justify-content:center;border-radius:10px;margin-right:10px;font-size:13px}.nav-link{font-size:13px;font-weight:700}.review{background:#fff4d9;text-align:center;font-size:12px;padding:9px 20px;color:#664609}.wrap{max-width:1160px;margin:auto;padding:0 28px}.hero{padding:53px 0 34px;display:grid;grid-template-columns:1.2fr .8fr;gap:42px;align-items:center}.eyebrow{font-size:11px;color:var(--green);letter-spacing:.18em;font-weight:800;text-transform:uppercase}.hero h1{font-size:clamp(29px,3.8vw,47px);line-height:1.35;letter-spacing:-.04em;margin:15px 0}.hero p{color:var(--muted);font-size:14px;max-width:600px;margin:0}.hero-note{border-left:3px solid var(--green);padding:2px 0 2px 22px}.hero-note strong{font-size:17px;display:block;margin-bottom:7px}.hero-note p{font-size:13px}.pills{display:flex;gap:8px;flex-wrap:wrap;margin-top:20px}.pill{font-size:11px;border:1px solid var(--line);background:white;border-radius:50px;padding:5px 10px;font-weight:650}.workspace{display:grid;grid-template-columns:340px minmax(0,1fr);gap:22px;align-items:start}.panel{border:1px solid var(--line);border-radius:17px;background:var(--white);box-shadow:var(--shadow);overflow:hidden}.panel-head{padding:20px 22px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:10px}.panel-head h2{font-size:15px;margin:0}.step{font-size:11px;color:var(--muted);font-weight:600}.panel-body{padding:21px 22px}.label{display:block;font-size:12px;font-weight:750;margin-bottom:8px}.subtle{color:var(--muted);font-size:11px;line-height:1.65}.drop{border:1px dashed #8daca4;background:#f5faf7;padding:20px 15px;border-radius:10px;margin-bottom:13px;text-align:center}.drop strong{font-size:13px;display:block;margin-bottom:6px}.drop input{max-width:100%;font-size:11px}.btn{border:1px solid var(--line);border-radius:8px;padding:10px 15px;background:white;color:var(--ink);font-weight:700;font-size:12px;display:inline-flex;align-items:center;justify-content:center;gap:8px;text-decoration:none}.primary{background:var(--green);color:white;border-color:var(--green)}.full{width:100%}.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.row .btn{flex:1}.rule{border:0;border-top:1px solid var(--line);margin:22px 0}.field{margin-bottom:15px}select,textarea,input[type=text]{background:white;border:1px solid #bdcdd2;border-radius:8px;padding:10px 11px;width:100%;min-width:0;color:var(--ink);font-size:12px}textarea{resize:vertical;min-height:130px}summary{font-size:12px;font-weight:700;cursor:pointer;padding:6px 0}details textarea{margin:10px 0 8px;font-family:monospace}.check{display:flex;gap:8px;align-items:start;font-size:11px;cursor:pointer}.check input{accent-color:var(--green);margin-top:4px}.status{margin:15px 0 0;padding:11px 12px;background:#f0f6f3;border-radius:8px;font-size:12px;overflow-wrap:anywhere}.status.error{background:#fff0eb;color:#903415}.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:var(--line);border-bottom:1px solid var(--line)}.stat{background:white;padding:21px 22px;min-width:0}.stat span{display:block;font-size:11px;color:var(--muted)}.stat strong{font-size:27px;line-height:1.4;font-weight:760;display:block;overflow-wrap:anywhere}.stat small{font-size:10px;color:var(--green)}.result-bar{padding:18px 22px;display:flex;justify-content:space-between;gap:10px;align-items:center}.result-bar strong{font-size:12px}.tag{background:var(--mint);color:var(--green);border-radius:50px;padding:5px 9px;font-size:10px;white-space:nowrap}.table-wrap{overflow:auto;max-height:400px;margin:0 22px 18px;border:1px solid var(--line);border-radius:9px}table{border-collapse:collapse;width:100%;font-size:12px;text-align:left}th{background:#f3f7f7;font-size:11px;position:sticky;top:0;z-index:1;color:var(--muted)}th,td{padding:12px 14px;border-bottom:1px solid var(--line);max-width:280px;overflow-wrap:anywhere}tr:last-child td{border-bottom:none}td:not(:first-child),th:not(:first-child){text-align:right;font-variant-numeric:tabular-nums}.empty{padding:65px 24px;text-align:center;color:var(--muted);font-size:13px}.empty strong{display:block;color:var(--ink);font-size:16px;margin-bottom:7px}.warning{background:#fff3d9;border:1px solid #e9cf96;padding:12px;border-radius:8px;font-size:12px;margin:0 22px 15px;color:#67480e}.preview-note{padding:0 22px 20px;font-size:11px;color:var(--muted)}.buttons-footer{border-top:1px solid var(--line);padding:17px 22px;display:flex;gap:9px;justify-content:flex-end}.sample-detail{margin-top:14px;font-size:11px;color:var(--muted)}.offer{margin:38px 0 0;padding:29px 31px;background:var(--ink);color:white;border-radius:16px;display:grid;grid-template-columns:1fr 300px;gap:35px;align-items:center}.offer .eyebrow{color:#a8ddc7}.offer h2{font-size:24px;line-height:1.4;margin:10px 0}.offer p{font-size:12px;color:#d4e0e4;margin:10px 0 0}.offer .price{font-size:36px;font-weight:750;letter-spacing:-.04em}.offer .price small{font-size:11px;font-weight:400;display:block;letter-spacing:0;color:#d4e0e4}.offer .btn{background:var(--orange);color:var(--ink);border:none}.scope{margin:18px 0 0;display:grid;grid-template-columns:repeat(3,1fr);gap:15px}.scope article{padding:20px 21px;border:1px solid var(--line);border-radius:12px;background:white}.scope h3{font-size:13px;margin:0 0 8px}.scope p{font-size:12px;color:var(--muted);margin:0}.consult{padding:26px;margin:20px 0;background:white;border:1px solid var(--line);border-radius:14px}.consult h2{font-size:17px;margin:0 0 12px}.consult textarea{min-height:210px}.consult .row{margin-top:12px}.consult .row .btn{flex:initial}.legal{font-size:11px;color:var(--muted);margin:26px 0 35px}footer{padding:23px 0;border-top:1px solid var(--line);font-size:11px;color:var(--muted);display:flex;justify-content:space-between;gap:14px}[hidden]{display:none!important}@media(max-width:900px){.workspace{grid-template-columns:300px minmax(0,1fr)}.panel-head,.panel-body{padding:17px}.stat{padding:17px 13px}.stat strong{font-size:22px}.hero{gap:22px}.offer{grid-template-columns:1fr 230px}.table-wrap{margin-left:15px;margin-right:15px}}@media(max-width:700px){nav{padding:15px 18px}.wrap{padding:0 18px}.hero{grid-template-columns:1fr;padding-top:31px;gap:23px}.hero h1{font-size:32px}.hero-note{padding-left:16px}.workspace{grid-template-columns:1fr;gap:17px}.panel-body{padding:19px}.stats .stat{padding:17px 12px}.stat strong{font-size:25px}.offer{grid-template-columns:1fr;gap:22px;padding:24px;margin-top:25px}.offer h2{font-size:21px}.scope{grid-template-columns:1fr;gap:10px}.scope article{padding:17px}.consult{padding:19px}.nav-link{font-size:11px}.result-bar{padding:16px}.buttons-footer{justify-content:stretch;padding:16px}.buttons-footer .btn{flex:1}footer{flex-direction:column;gap:3px}.review{font-size:10px}}
+
+@media(max-width:700px){.brand{font-size:13px;white-space:nowrap;letter-spacing:0}.brand b{width:29px;height:29px;margin-right:7px;font-size:11px}.nav-link{max-width:95px;font-size:10px}.stat strong{font-size:clamp(18px,5.8vw,25px)}}
+</style></head>
+<body><div class="review">デモ版 · 参考価格は正式合意前です。CSVの外部送信・契約・決済は行いません。</div><header><nav><a class="brand" href="#"><b>YS</b>CSV WORKBENCH</a><a class="nav-link" href="#offer">業務に合わせた自動化について ↗</a></nav></header>
+<main class="wrap"><section class="hero"><div><div class="eyebrow">SMALL AUTOMATION, TANGIBLE RESULTS</div><h1>毎月のCSV集計を、<br>ひとつのボタンに。</h1><p>ファイルをまとめる。分類ごとに足す。使えるCSVに戻す。<br>繰り返している作業を、小さな専用ツールへ。</p><div class="pills"><span class="pill">ブラウザ内で処理</span><span class="pill">追加API費用なし</span><span class="pill">登録不要のデモ</span></div></div><aside class="hero-note"><strong>まずは、サンプルで試す。</strong><p>架空の広告データを媒体別にまとめます。<br>読み込んだCSVは外部に送信せず、<br>このタブのメモリ内だけで処理します。</p></aside></section>
+<div class="workspace"><section class="panel"><div class="panel-head"><h2>データと集計ルール</h2><span class="step">01 / INPUT</span></div><div class="panel-body"><div class="drop"><strong>CSVファイルを選択</strong><p class="subtle">同じ見出しのCSVを最大10個・合計5MBまで。<br>合計20,000行・80列以内。</p><input id="files" type="file" accept=".csv,text/csv" multiple aria-label="CSVファイルを選択"></div><div class="field"><label class="label" for="encoding">ファイルの文字コード</label><select id="encoding"><option value="utf-8">UTF-8（通常はこちら）</option><option value="shift_jis">Shift_JIS（日本語WindowsのCSV）</option></select></div><button class="btn primary full" id="sample">サンプルで試す ↗</button><details><summary>CSVを直接貼り付ける</summary><label class="subtle" for="csv-text">1行目を見出しにしたカンマ区切りデータ</label><textarea id="csv-text" spellcheck="false" placeholder="媒体,費用&#10;検索広告,15000&#10;SNS広告,10000"></textarea><button id="read-text" class="btn full">貼り付けたCSVを読み込む</button></details><hr class="rule"><div class="field"><label class="label" for="group">何ごとにまとめる？</label><select id="group" disabled><option value="">CSV読み込み後に選択</option></select></div><div class="field"><label class="label" for="metric">どの数値を合計する？</label><select id="metric" disabled><option value="">CSV読み込み後に選択</option></select></div><label class="check"><input id="normalize" type="checkbox" checked>分類名の前後空白・全角英数字をそろえる</label><div id="status" class="status" role="status" aria-live="polite">サンプルを試すか、CSVを読み込んでください。</div></div></section>
+<section class="panel"><div class="panel-head"><h2>集計プレビュー</h2><span class="step">02 / OUTPUT</span></div><div class="stats"><div class="stat"><span>読み込み件数</span><strong id="row-count">0</strong><small>ROWS</small></div><div class="stat"><span>分類数</span><strong id="group-count">0</strong><small>GROUPS</small></div><div class="stat"><span id="total-label">合計</span><strong id="total">0</strong><small id="total-caption">SELECT A METRIC</small></div></div><div class="result-bar"><strong id="result-title">集計結果がここに表示されます</strong><span class="tag" id="source-tag">未読み込み</span></div><div id="warning" class="warning" role="alert" hidden></div><div class="empty" id="empty"><strong>表の準備はできています。</strong>左の「サンプルで試す」から、処理結果を確認できます。</div><div class="table-wrap" id="table-wrap" hidden><table><caption class="subtle" id="table-caption">先頭100分類までプレビュー</caption><thead><tr><th id="group-head" scope="col">分類</th><th scope="col">件数</th><th id="sum-head" scope="col">合計</th><th scope="col">除外件数</th></tr></thead><tbody id="tbody"></tbody></table></div><div class="preview-note">空欄や不正な数値は合計から除外し、件数を表示します。重複行は削除しません。小数は6桁まで。合計の精度を保てない場合は集計を停止します。元データは変更しません。</div><div class="buttons-footer"><button class="btn" id="reset">データを消去</button><button class="btn primary" id="download" disabled>集計CSVを保存 ↓</button></div></section></div>
+<p class="sample-detail">サンプルは架空の8行・3媒体です。費用合計は90,000、売上合計は237,000。顧客の実績や成果を示すものではありません。</p>
+<section class="offer" id="offer"><div><div class="eyebrow">YOUR WORKFLOW, YOUR TOOL</div><h2>この「ひと手間」を、<br>あなたの業務に合わせてなくす。</h2><p>CSVの列を整える、指定条件で集計する、決まった形式で出力する。<br>まずは1つの入力形式と1つの成果物に絞って設計します。</p></div><div><div class="price">¥30,000<small>参考総額案・個別見積もり / 価格・納期は正式合意前</small></div><p>入力1形式 · 出力1形式 · 説明書 · テスト<br>仕様内修正1回。保守・追加機能は別途相談。</p><button class="btn full" id="make-brief" style="margin-top:16px">相談用のたたき台を作る ↗</button></div></section>
+<div class="scope"><article><h3>01 / 向いている作業</h3><p>月次CSVの結合、項目名の統一、カテゴリ別集計、提出用フォーマットの生成。</p></article><article><h3>02 / 先に確認すること</h3><p>匿名化した入力例、期待する出力例、対象件数、利用端末、エラー時の扱い。</p></article><article><h3>03 / このプランの対象外</h3><p>ログイン自動化、決済・送金、本番データ更新、無制限修正、24時間監視。</p></article></div>
+<section class="consult" id="consult" hidden><h2>ご相談用のたたき台</h2><p class="subtle">入力データやファイル名は含めません。この画面から外部送信はしません。相談フォームにはCSVデータ・ファイル名・編集した相談文を自動転送しません。</p><label class="label" for="brief">内容を確認・編集してご利用ください</label><textarea id="brief"></textarea><div class="row"><button class="btn primary" id="copy-brief">相談文をコピー</button><button class="btn" id="save-brief">テキストとして保存</button><a class="btn" id="contact-link" href="../index.html?service=csv#contact" rel="noreferrer">相談フォームを開く ↗</a><span id="copy-status" class="subtle" role="status" aria-live="polite"></span></div></section>
+<p class="legal">このデモは一般的な集計処理の見本です。会計・請求・送金の確定処理には使用しないでください。ブラウザ拡張や端末自体の安全性は別途管理が必要です。タブを閉じると読み込んだデータは失われます。外部通信・永続保存・分析タグ・決済機能は実装していません。</p>
+<footer><span>YS / 業務自動化 · REVIEW BUILD 2026.10.11</span><span>見える成果物から、小さく始める。</span></footer></main>
+<script id="csv-core">(function (root) {
+  'use strict';
+  const LIMITS = Object.freeze({ bytes: 5 * 1024 * 1024, rows: 20000, columns: 80, files: 10 });
+  const normalize = value => String(value).normalize('NFKC').trim();
+  function parseCSV(source) {
+    if (typeof source !== 'string') throw new Error('CSVはテキストで指定してください。');
+    if (source.length > LIMITS.bytes) throw new Error('CSVが大きすぎます。合計5MB以下でお試しください。');
+    const text = source.replace(/^\uFEFF/, '');
+    if (!text.trim()) throw new Error('CSVが空です。');
+    if (/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/.test(text)) throw new Error('CSVに未対応の制御文字があります。');
+    const rows = []; let row = [], field = '', quoted = false, closed = false, touched = false;
+    function cell() {
+      row.push(field); field = ''; closed = false;
+      if (row.length > LIMITS.columns) throw new Error('列数は80列までです。');
+    }
+    function line() {
+      const hasRecord = touched || row.length > 0 || closed;
+      cell();
+      if (hasRecord) rows.push(row);
+      row = []; touched = false;
+      if (rows.length > LIMITS.rows + 1) throw new Error('データは20,000行までです。');
+    }
+    for (let i = 0; i < text.length; i++) {
+      const ch = text[i];
+      if (quoted) {
+        if (ch === '"') {
+          if (text[i + 1] === '"') { field += '"'; i++; }
+          else { quoted = false; closed = true; }
+        } else field += ch;
+        touched = true; continue;
+      }
+      if (ch === ',') { cell(); touched = true; continue; }
+      if (ch === '\n' || ch === '\r') { if (ch === '\r' && text[i + 1] === '\n') i++; line(); continue; }
+      if (closed) throw new Error('閉じ引用符の後に不正な文字があります。');
+      if (ch === '"') {
+        if (field !== '') throw new Error('セル途中の引用符を確認してください。');
+        quoted = true;
+      } else field += ch;
+      touched = true;
+    }
+    if (quoted) throw new Error('閉じられていない引用符があります。');
+    if (touched || row.length || field || closed) line();
+    if (!rows.length) throw new Error('CSVが空です。');
+    const headers = rows[0].map(normalize);
+    if (headers.some(h => !h)) throw new Error('見出しに空欄があります。');
+    if (new Set(headers).size !== headers.length) throw new Error('正規化後に重複する見出しがあります。');
+    const data = rows.slice(1);
+    data.forEach((r, i) => { if (r.length !== headers.length) throw new Error(`データ${i + 1}行目の列数が見出しと一致しません。`); });
+    return { headers, rows: data };
+  }
+  function mergeTables(tables) {
+    if (!Array.isArray(tables) || !tables.length) throw new Error('CSVを読み込んでください。');
+    if (tables.length > LIMITS.files) throw new Error('ファイルは10個までです。');
+    const headers = tables[0].headers.slice(), rows = [];
+    for (const table of tables) {
+      if (table.headers.length !== headers.length || headers.some(h => !table.headers.includes(h))) {
+        throw new Error('CSVの見出しが一致しません。同じ項目のCSVだけをまとめてください。');
+      }
+      const order = headers.map(h => table.headers.indexOf(h));
+      for (const row of table.rows) {
+        rows.push(order.map(i => row[i]));
+        if (rows.length > LIMITS.rows) throw new Error('結合後のデータは20,000行までです。');
+      }
+    }
+    return { headers, rows };
+  }
+  function parseNumber(value) {
+    let text = normalize(value);
+    if (!text) return null;
+    text = text.replace(/^[¥￥$]/, '').replace(/円$/, '').trim();
+    if (!/^[+-]?(?:\d+|\d{1,3}(?:,\d{3})+)(?:\.\d{1,6})?$/.test(text)) return null;
+    const number = Number(text.replaceAll(',', ''));
+    return Number.isFinite(number) && Math.abs(number) <= 1000000000 ? number : null;
+  }
+  function aggregate(table, groupIndex, valueIndex, trimGroups = true) {
+    if (![groupIndex, valueIndex].every(i => Number.isInteger(i) && i >= 0 && i < table.headers.length)) throw new Error('集計する列を選んでください。');
+    if (groupIndex === valueIndex) throw new Error('分類列と合計列は別の列にしてください。');
+    const groups = new Map(); let invalid = 0, blankGroups = 0, total = 0;
+    for (const row of table.rows) {
+      const key = trimGroups ? normalize(row[groupIndex]) : row[groupIndex];
+      if (key === '') blankGroups++;
+      if (!groups.has(key)) groups.set(key, { key, count: 0, valid: 0, invalid: 0, sum: 0 });
+      const group = groups.get(key); group.count++;
+      const value = parseNumber(row[valueIndex]);
+      if (value === null) { group.invalid++; invalid++; }
+      else {
+        // Six-place fixed-point accumulation avoids ordinary decimal addition drift.
+        const scaled = Math.round(value * 1000000);
+        if (!Number.isSafeInteger(group.sum + scaled) || !Number.isSafeInteger(total + scaled)) throw new Error('合計が安全に扱える数値範囲を超えました。');
+        group.sum += scaled; group.valid++; total += scaled;
+      }
+    }
+    function unscale(scaled) {
+      const value = scaled / 1000000;
+      const fixed = value.toFixed(6);
+      const canonical = fixed.replace(/\.?0+$/, '');
+      const displayed = new Intl.NumberFormat('ja-JP', { maximumFractionDigits: 6, useGrouping: false }).format(value);
+      // A safe scaled integer can still lose a decimal place when converted
+      // back to Number. Refuse a result that cannot display all six places.
+      if (Number(fixed.replace('.', '')) !== scaled || String(value) !== canonical || displayed !== canonical) {
+        throw new Error('合計を小数6桁の精度で表示できません。データを分けて集計してください。');
+      }
+      return value;
+    }
+    const result = Array.from(groups.values(), g => ({ ...g, sum: unscale(g.sum) }));
+    result.sort((a, b) => b.sum - a.sum || a.key.localeCompare(b.key, 'ja'));
+    return { groups: result, invalid, blankGroups, total: unscale(total), rows: table.rows.length };
+  }
+  function safeCell(value) {
+    let text = String(value ?? '');
+    // Text cells that spreadsheet software could interpret as formulae are escaped.
+    if (typeof value !== 'number' && (/^[\s\uFEFF]*[=+@-]/.test(text) || /^[\t\r\n]/.test(text))) text = "'" + text;
+    return /[",\r\n]/.test(text) ? '"' + text.replaceAll('"', '""') + '"' : text;
+  }
+  function toCSV(rows) { return '\uFEFF' + rows.map(r => r.map(safeCell).join(',')).join('\r\n') + '\r\n'; }
+  root.CsvKit = Object.freeze({ LIMITS, normalize, parseCSV, mergeTables, parseNumber, aggregate, safeCell, toCSV });
+})(globalThis);
+</script><script id="csv-app">(function () {
+  'use strict';
+  const $ = id => document.getElementById(id), kit = CsvKit;
+  const sample = '日付,媒体,費用,売上,成果件数\n2026-10-01,検索広告,18000,60000,6\n2026-10-02,検索広告,12000,33000,3\n2026-10-03,検索広告,15000,51000,5\n2026-10-01,SNS広告,10000,21000,3\n2026-10-02,SNS広告,12000,30000,4\n2026-10-03,SNS広告 ,8000,18000,2\n2026-10-01,メール,5000,10000,2\n2026-10-02,メール,10000,14000,3\n';
+  let table = null, result = null, loadVersion = 0;
+  const number = value => new Intl.NumberFormat('ja-JP', { maximumFractionDigits: 6 }).format(value);
+  function status(text, error = false) { $('status').textContent = text; $('status').classList.toggle('error', error); }
+  function clearData() {
+    table = null; result = null;
+    for (const id of ['group','metric']) { $(id).replaceChildren(new Option('CSV読み込み後に選択','')); $(id).disabled = true; }
+    for (const id of ['row-count','group-count','total']) $(id).textContent = '0';
+    $('total-label').textContent = '合計'; $('total-caption').textContent = 'SELECT A METRIC';
+    $('tbody').replaceChildren(); $('table-wrap').hidden = true; $('empty').hidden = false;
+    $('download').disabled = true; $('warning').hidden = true;
+    $('source-tag').textContent = '未読み込み'; $('result-title').textContent = '集計結果がここに表示されます';
+  }
+  function clearAll() { loadVersion++; clearData(); $('files').value = ''; $('csv-text').value = ''; $('brief').value = ''; $('consult').hidden = true; $('copy-status').textContent = ''; status('読み込んだデータをこの画面から消去しました。'); }
+  function render() {
+    result = null; $('download').disabled = true;
+    if (!table) return;
+    try {
+      const gi = Number($('group').value), vi = Number($('metric').value);
+      result = kit.aggregate(table, gi, vi, $('normalize').checked);
+      $('row-count').textContent = number(result.rows); $('group-count').textContent = number(result.groups.length);
+      $('total').textContent = number(result.total); $('total-label').textContent = table.headers[vi] + ' 合計';
+      $('total-caption').textContent = 'VALID VALUES ONLY';
+      $('group-head').textContent = table.headers[gi]; $('sum-head').textContent = table.headers[vi] + ' 合計';
+      const body = document.createDocumentFragment();
+      result.groups.slice(0, 100).forEach(group => {
+        const tr = document.createElement('tr');
+        [group.key === '' ? '（空欄）' : group.key, number(group.count), number(group.sum), number(group.invalid)].forEach(value => {
+          const td = document.createElement('td'); td.textContent = value; tr.appendChild(td);
+        }); body.appendChild(tr);
+      });
+      $('tbody').replaceChildren(body); $('table-wrap').hidden = !result.groups.length; $('empty').hidden = !!result.groups.length;
+      $('result-title').textContent = table.headers[gi] + '別の集計';
+      $('table-caption').textContent = `${result.groups.length}分類中 ${Math.min(100,result.groups.length)}分類を表示。CSVには全分類を出力。`;
+      const warnings = [];
+      if (result.invalid) warnings.push(`合計対象の空欄・不正な数値 ${number(result.invalid)}件を除外しています。除外内容を元CSVで確認してください。`);
+      if (result.blankGroups) warnings.push(`分類が空欄の行 ${number(result.blankGroups)}件は「（空欄）」として集計しています。`);
+      if (!result.rows) warnings.push('見出しのみでデータ行がありません。');
+      $('warning').textContent = warnings.join(' '); $('warning').hidden = !warnings.length;
+      $('download').disabled = !result.groups.length;
+      status(`${number(result.rows)}行を読み込みました。元CSVは変更していません。`);
+    } catch (error) {
+      $('tbody').replaceChildren(); $('table-wrap').hidden = true; $('empty').hidden = false;
+      $('warning').hidden = true; $('group-count').textContent = '0'; $('total').textContent = '0';
+      $('total-label').textContent = '合計'; $('total-caption').textContent = '集計できません';
+      $('result-title').textContent = '集計条件を確認してください';
+      status(error.message, true);
+    }
+  }
+  function accept(tables, label) {
+    table = kit.mergeTables(tables);
+    if (table.headers.length < 2) throw new Error('分類と合計のために2列以上が必要です。');
+    for (const id of ['group','metric']) {
+      $(id).replaceChildren(...table.headers.map((header,i) => new Option(header, String(i))));
+      $(id).disabled = false;
+    }
+    const groupIndex = table.headers.findIndex(h => ['媒体','カテゴリ','分類','商品','部署'].includes(h));
+    $('group').value = String(groupIndex >= 0 ? groupIndex : 0);
+    let metricIndex = table.headers.findIndex(h => ['費用','売上','金額','数量'].includes(h));
+    if (metricIndex < 0 || metricIndex === Number($('group').value)) metricIndex = table.headers.findIndex((_,i) => i !== Number($('group').value));
+    $('metric').value = String(metricIndex);
+    $('source-tag').textContent = label;
+    render();
+  }
+  function fail(error) { clearData(); status(error instanceof Error ? error.message : '読み込みに失敗しました。', true); }
+  async function readFiles() {
+    const version = ++loadVersion;
+    const files = Array.from($('files').files), encoding = $('encoding').value;
+    clearData();
+    if (!files.length) { status('CSVを選択してください。'); return; }
+    status('CSVを読み込んでいます。');
+    try {
+      if (files.length > kit.LIMITS.files) throw new Error('ファイルは10個までです。');
+      if (files.reduce((sum,f) => sum + f.size,0) > kit.LIMITS.bytes) throw new Error('ファイルは合計5MB以下にしてください。');
+      const tables = [];
+      for (const file of files) {
+        if (!/\.csv$/i.test(file.name)) throw new Error('拡張子が.csvのファイルを選択してください。');
+        const bytes = await file.arrayBuffer();
+        if (version !== loadVersion) return;
+        let text;
+        try { text = new TextDecoder(encoding, { fatal: true }).decode(bytes); }
+        catch { throw new Error('文字コードを読み取れません。UTF-8 / Shift_JISの選択を確認してください。'); }
+        tables.push(kit.parseCSV(text));
+      }
+      if (version === loadVersion) { $('csv-text').value = ''; accept(tables, `${files.length}ファイル / ローカル処理`); }
+    } catch (error) { if (version === loadVersion) fail(error); }
+  }
+  function saveText(text, filename, mime) {
+    const url = URL.createObjectURL(new Blob([text],{ type: mime }));
+    const a = document.createElement('a'); a.href = url; a.download = filename;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+  $('sample').addEventListener('click', () => {
+    loadVersion++; clearData(); $('files').value = ''; $('csv-text').value = '';
+    try { accept([kit.parseCSV(sample)], '架空サンプル'); } catch (error) { fail(error); }
+  });
+  $('files').addEventListener('change', readFiles);
+  $('encoding').addEventListener('change', () => { if ($('files').files.length) readFiles(); });
+  $('read-text').addEventListener('click', () => {
+    loadVersion++; clearData(); $('files').value = '';
+    try {
+      const text = $('csv-text').value;
+      if (new TextEncoder().encode(text).length > kit.LIMITS.bytes) throw new Error('貼り付けは5MB以下にしてください。');
+      accept([kit.parseCSV(text)], '貼り付け / ローカル処理');
+    } catch (error) { fail(error); }
+  });
+  for (const id of ['group','metric','normalize']) $(id).addEventListener('change', render);
+  $('reset').addEventListener('click', clearAll);
+  $('download').addEventListener('click', () => {
+    if (!result || !table || !result.groups.length) return;
+    const header = [table.headers[Number($('group').value)],'件数',table.headers[Number($('metric').value)] + ' 合計','除外件数'];
+    const rows = result.groups.map(g => [g.key,g.count,g.sum,g.invalid]);
+    saveText(kit.toCSV([header,...rows]), '集計結果.csv', 'text/csv;charset=utf-8');
+  });
+  $('make-brief').addEventListener('click', () => {
+    $('brief').value = 'CSV処理の自動化について相談したいです。\n\n【現在の作業】\n（例：毎月複数のCSVをまとめ、分類別の合計を作っています）\n\n【希望する入力と出力】\n入力：\n出力：\n\n【データ量・実行頻度】\n\n【利用端末・ブラウザ】\n\n【希望時期・予算】\n\nまずは入力1形式・出力1形式の範囲で、実現方法とお見積もりを相談したいです。入力例と期待する出力例は、機密情報を匿名化して用意します。';
+    $('consult').hidden = false; $('copy-status').textContent = '';
+    $('consult').scrollIntoView({behavior:'smooth', block:'start'});
+  });
+  $('copy-brief').addEventListener('click', async () => {
+    try { await navigator.clipboard.writeText($('brief').value); $('copy-status').textContent = '相談文をコピーしました。送信はしていません。'; }
+    catch { $('brief').focus(); $('brief').select(); $('copy-status').textContent = '自動コピーできません。選択中の文章をコピーしてください。'; }
+  });
+  $('save-brief').addEventListener('click', () => saveText($('brief').value, 'CSV自動化_相談文.txt', 'text/plain;charset=utf-8'));
+})();
+</script></body></html>
