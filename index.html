@@ -3,8 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="referrer" content="no-referrer">
-<meta name="description" content="CSV集計など繰り返す業務の自動化・システム開発。ブラウザで試せるデモから、入力・出力を絞った専用ツールのご相談へ。">
 <title>関口祐紀 — AI活用・システム開発</title>
 <style>
   :root {
@@ -66,11 +64,6 @@
 
   footer { border-top: 1px solid var(--border); text-align: center; padding: 2rem; color: var(--muted); font-size: .85rem; }
 
-  section[id] { scroll-margin-top: 80px; }
-  a:focus-visible, button:focus-visible { outline: 3px solid var(--accent2); outline-offset: 4px; }
-  .privacy-note { color: var(--muted); font-size: .85rem; margin-bottom: 1.25rem; }
-  @media (max-width: 600px) { .cards { grid-template-columns: minmax(0, 1fr); } .contact-wrap { padding: 1.25rem; } }
-
   @media (max-width: 600px) { .form-row { grid-template-columns: 1fr; } .nav-links { display: none; } }
 </style>
 </head>
@@ -87,12 +80,11 @@
 
 <div class="hero">
   <div class="badge">AI-Driven Development</div>
-  <h1>AIで、業務を<br><span>ひとつずつ自動化</span></h1>
-  <p>AI自動化・システム開発・コンサルティング。<br>まずは繰り返している作業をひとつ、使える専用ツールに。</p>
+  <h1>AIで、業務を<br><span>10倍速にする</span></h1>
+  <p>AI自動化・システム開発・コンサルティング。<br>ナハトのIT企画担当として培った知見で、あなたのビジネスを加速します。</p>
   <div class="btn-group">
     <a href="#contact" class="btn-primary">無料相談する</a>
     <a href="#services" class="btn-outline">サービスを見る</a>
-    <a href="csv-automation/index.html" class="btn-outline" id="csv-demo-link">CSV集計デモを試す ↗</a>
   </div>
 </div>
 
@@ -159,25 +151,24 @@
   <div class="section-label">Contact</div>
   <div class="section-title">お問い合わせ</div>
   <div class="contact-wrap">
-    <p class="privacy-note" id="contact-privacy">送信ボタンを押すと、入力内容が外部フォームサービス（Formspree）へ送信されます。顧客情報・認証情報・機密データは記入せず、匿名化した作業概要をお送りください。CSVファイルはこのフォームに引き継がれません。</p>
-    <form aria-describedby="contact-privacy" action="https://formspree.io/f/mbdpnddb" method="POST">
+    <form action="https://formspree.io/f/mbdpnddb" method="POST">
       <div class="form-row">
         <div class="form-group">
-          <label for="contact-name">お名前 *</label>
-          <input type="text" id="contact-name" name="name" autocomplete="name" required placeholder="山田 太郎">
+          <label>お名前 *</label>
+          <input type="text" name="name" required placeholder="山田 太郎">
         </div>
         <div class="form-group">
-          <label for="contact-company">会社名</label>
-          <input type="text" id="contact-company" name="company" autocomplete="organization" placeholder="株式会社〇〇">
+          <label>会社名</label>
+          <input type="text" name="company" placeholder="株式会社〇〇">
         </div>
       </div>
       <div class="form-group">
-        <label for="contact-email">メールアドレス *</label>
-        <input type="email" id="contact-email" name="email" autocomplete="email" required placeholder="example@company.com">
+        <label>メールアドレス *</label>
+        <input type="email" name="email" required placeholder="example@company.com">
       </div>
       <div class="form-group">
-        <label for="contact-service">サービス種別</label>
-        <select id="contact-service" name="service">
+        <label>サービス種別</label>
+        <select name="service">
           <option value="">選択してください</option>
           <option>AI自動化開発</option>
           <option>Webアプリ開発</option>
@@ -187,8 +178,8 @@
         </select>
       </div>
       <div class="form-group">
-        <label for="contact-message">ご相談内容 *</label>
-        <textarea id="contact-message" name="message" required placeholder="お気軽にご相談ください。予算・納期の目安があればお知らせください。"></textarea>
+        <label>ご相談内容 *</label>
+        <textarea name="message" required placeholder="お気軽にご相談ください。予算・納期の目安があればお知らせください。"></textarea>
       </div>
       <button type="submit" class="btn-submit">送信する</button>
     </form>
@@ -199,16 +190,5 @@
   <p>© 2026 関口祐紀. Built with Claude Code.</p>
 </footer>
 
-<script>
-(function () {
-  'use strict';
-  // Only a fixed service code is read. CSV contents and filenames never enter the URL.
-  if (new URLSearchParams(window.location.search).get('service') !== 'csv') return;
-  const service = document.getElementById('contact-service');
-  const message = document.getElementById('contact-message');
-  if (!service.value) service.value = 'Webアプリ開発';
-  if (!message.value) message.value = 'CSV処理の自動化について相談したいです。\n\n【現在の作業】\n\n【入力と期待する出力】\n\n【データ量・実行頻度】\n\n【利用端末・ブラウザ】\n\n【希望時期・予算】\n\n入力1形式・出力1形式を基本に相談希望です。機密情報を含まない見本を用意します。';
-})();
-</script>
 </body>
 </html>
